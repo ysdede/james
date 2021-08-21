@@ -48,7 +48,6 @@ def picklines(_body, _limit: int = 0):
 
 
 def sortdnas(inputfile: str, _stratname: str, stratclass, _top: int = 25, _rng: int = 100, _criteria: str = 'pnl1'):
-    # print(f'Strategy: {_stratname}')
 
     a = readlog(inputfile)  # TODO: Take input from args
     rows = picklines(a)
