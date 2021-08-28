@@ -207,7 +207,7 @@ def run(_start_date, _finish_date, _iterations, _width):
                  'Market Change']
 
     header1 = ['Pair', 'TF', 'Start Date', 'End Date', 'Total', 'Total Net', 'Max.', 'Annual', 'Win',
-               'Sharpe', 'Calmar', 'Winning', 'Losing', 'Largest', 'Largest', 'Winning', 'Lossing',
+               'Sharpe', 'Calmar', 'Winning', 'Losing', 'Largest', 'Largest', 'Winning', 'Losing',
                'Market']
     header2 = [' ', ' ', '   ', '   ', 'Trades', 'Profit %', 'DD %', 'Return %', 'Rate %',
                'Ratio', 'Ratio', 'Streak', 'Streak', 'Win. Trade', 'Los. Trade', 'Trades', 'Trades',

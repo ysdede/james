@@ -99,10 +99,16 @@ def random(start_date: str, finish_date: str, iterations: int, days: int) -> Non
     r = router.routes[0]  # Read first route from routes.py
     timeframe = r.timeframe
 
+    if start_date == None or finish_date == None:
+        print('Enter dates!')
+        exit()
+
     if not iterations:
         iterations = 100
+        print('Iterations not provided, falling back to 100 iters!')
     if not days:
         days = 180
+        print('Window width not provided, falling back to 180 days window!')
 
     width = (24 / (jh.timeframe_to_one_minutes(timeframe) / 60)) * days
 

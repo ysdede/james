@@ -11,17 +11,33 @@ from jesse.helpers import get_config
 
 jamesdir = 'jamesdata'
 
-def makeroutes(exc, pai, tf, stra, dnacode):
-    routespy = f"routes = [('{exc}', '{pai}', '{tf}', '{stra}', '{dnacode}')]" \
-               + "\nextra_candles = []"
+def make_routes(_template, dna_code):
+    _template = _template.replace('(╯°□°)╯︵ ┻━┻', dna_code)
+
     if os.path.exists('routes.py'):
         os.remove('routes.py')
+
     f = open('routes.py', 'w')
-    f.write(routespy)
+    f.write(_template)
     f.flush()
     os.fsync(f.fileno())
     f.close()
 
+def write_file(_fn, _body):
+    if os.path.exists(_fn):
+        os.remove(_fn)
+
+    f = open(_fn, 'w')
+    f.write(_body)
+    f.flush()
+    os.fsync(f.fileno())
+    f.close()
+
+def read_file(_file):
+    ff = open(_file, 'r')
+    _body = ff.read()
+    ff.close()
+    return _body
 
 def makestrat(_strat, _key, _dna):
     stratfile = f'strategies\\{_strat}\\__init__.py'
@@ -160,7 +176,22 @@ def runtest(_start_date, _finish_date, _pair, _tf, _dnaid):
     print(formatter.format(*ress))"""
 
 
+def signal_handler(sig, frame):
+    print('You pressed Ctrl+C!')
+
+    # Restore routes.py
+    write_file('routes.py', routes_template)
+    import sys
+    sys.exit(0)
+
 def run(_start_date, _finish_date):
+    import signal
+
+
+    signal.signal(signal.SIGINT, signal_handler)
+    # print('Press Ctrl+C')
+    # signal.pause()
+
     # Starts here
     results = []
     resultswithoutdna = []
@@ -211,11 +242,15 @@ def run(_start_date, _finish_date):
 
     print('Please wait while loading candles...')
 
+    # Read routes.py as template
+    global routes_template
+    routes_template = read_file('routes.py')
+
     start = timer()
     for index, dnac in enumerate(dnas, start=1):
         # print(dnac[0])
         # Inject dna to routes.py
-        makeroutes(exc=exchange, pai=pair, tf=timeframe, stra=strategy, dnacode=dnac[0])
+        make_routes(routes_template, dna_code=dnac[0])
         # makestrat(_strat=strategy, _key=key, _dna=dnaindex)
 
         # Run jesse backtest and grab console output
@@ -226,7 +261,7 @@ def run(_start_date, _finish_date):
         # print(ress)
         f.write(str(ress) + '\n')
         f.flush()
-        sortedresults = sorted(results, key=lambda x: float(x[11]), reverse=True)
+        sortedresults = sorted(results, key=lambda x: float(x[10]), reverse=True)
 
         clearConsole()
         rt = ((timer() - start) / index) * (lendnas - index)
@@ -243,6 +278,9 @@ def run(_start_date, _finish_date):
             print(
                 formatter.format(*r))
         delta = timer() - start
+
+    # Restore routes.py
+    write_file('routes.py', routes_template)
 
     # Sync and close log file
     os.fsync(f.fileno())

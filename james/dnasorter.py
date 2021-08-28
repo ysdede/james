@@ -28,7 +28,9 @@ def picklines(_body, _limit: int = 0):
         if '|| win-rate:' in line:
             ll = line.replace('%', '')
             ll = ll.split('total:')
-            dna = ll[0].split('==')[1].replace(' ', '').replace('\\', '\\\\')
+            dna = ll[0].split(' == ')[1].replace(' ', '')
+
+            #    .replace("""\'""", """\\'""").replace('\\t', '\\\\t')
             winrate1 = ll[0].split('win-rate')[1].replace(' ', '').replace(',', '').replace(':', '').replace('None',
                                                                                                              '0')
             winrate2 = ll[1].split('win-rate')[1].replace(' ', '').replace(',', '').replace(':', '').replace('None',
@@ -151,7 +153,7 @@ def sortdnas(inputfile: str, _stratname: str, stratclass, _top: int = 25, _rng: 
 
         # print('encoded:', hyperparameters)
         dd.append(hyperparameters)
-        f.write(str(dd) + ',\n')
+        f.write(str(dd).replace("""['""", """[r'""") + ',\n')
 
     f.write(']\n')
     f.flush()
